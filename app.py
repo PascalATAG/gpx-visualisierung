@@ -12,7 +12,8 @@ def index():
 
 @app.route('/import_files', methods=['GET'])
 def import_files():
-    return render_template('import_files.html')
+    result = db.import_files()
+    return render_template('import_files.html', tracks=result[0], points=result[1])
 
 @app.route('/login', methods=['GET'])
 def login():
