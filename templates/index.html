@@ -1,8 +1,36 @@
 <html>
     <head>
         <title>GPX-Visualisierung</title>
+        <link rel="stylesheet" href="../static/css/index.css">
     </head>
     <body>
-        GPX-Visualisierung
+        <h1>GPX-Visualisierung</h1>
+        <div class="menu">
+            {% if user %}
+            <button type="button" id="map">Zur Karte</button>
+            <button type="button" id="logout">Abmelden</button>
+            {% else %}
+            <button type="button" id="login">Anmelden</button>
+            {% endif %}
+            <button type="button" id="import">Daten importieren</button>
+        </div>
     </body>
+    <script>
+        document.getElementById('map').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/map";
+        });
+        document.getElementById('logout').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/";
+        });
+        document.getElementById('login').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/login";
+        });
+        document.getElementById('import').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/import_files";
+        });
+    </script>
 </html>

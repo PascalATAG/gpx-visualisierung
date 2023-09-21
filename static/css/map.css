@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#map {
+    height: 100%;
+    width: 70%;
+}
+
+.view-border {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.user-interface {
+    width: 30%
+}
+
+.track-preview {
+    width: calc(100% - 1vw);
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+    margin-right: 5vw;
+}
+
+.track-preview:hover {
+    background-color: rgba(245, 245, 245, 0.888);
+}

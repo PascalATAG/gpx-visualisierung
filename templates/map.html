@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>
+            Karte
+        </title>
+        <link rel="stylesheet" href="/leaflet_css">
+        <link rel="stylesheet" href="../static/css/map.css">
+        <script src="/leaflet_js"></script>
+    </head>
+    <body>
+        <div class="view-border">
+            <div class="user-interface">
+                {% for track in tracks %}
+                <div class="track-preview" onclick='load_path("{{ track }}")'>
+                    {{ track[1] }}
+                </div>
+                {% endfor %}
+            </div>
+            <div id="map"></div>
+        </div>
+        <script>
+            var map = L.map('map').setView([51.337, 7.043], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            function load_path(track){
+                const pattern = /\((.*)\)/;
+                const matches = track.match(pattern);
+                track = matches[1].split(",");
+                fetch("/draw_path", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      tid: track[0],
+                      dateiname: track[1],
+                      fzid: track[3]
+                    }),
+                    headers: {
+                      "Content-type": "application/json; charset=UTF-8"
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    var polyline = L.polyline(res, {color: 'red'}).addTo(map);
+                    map.fitBounds(polyline.getBounds());
+                });
+            }
+        </script>
+    </body>
+</html>
