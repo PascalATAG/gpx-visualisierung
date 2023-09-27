@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 import gpxpy
+from datetime import datetime
 
 class MySQLConnector:
     def __init__(self, user, password, host, database):
@@ -59,15 +60,67 @@ class MySQLConnector:
                                    
         return [track_counter, point_counter]
     
-    def get_tracks(self, user_id):
-        query = "SELECT * FROM track WHERE(pid = %s)"
-        result = self.execute_query(query, False, False, (user_id,))
-        return result
-    
     def get_points(self, tid):
         query = "SELECT lat, lon FROM punkt WHERE(tid = %s)"
         result = self.execute_query(query, False, False, (tid,))
         return result
+    
+    def get_nicknames(self):
+        query = "SELECT nick FROM person"
+        result = self.execute_query(query, False, False, False)
+        result_list = [item[0] for item in result]
+        return result_list
+    
+    def get_vehicles(self):
+        query = "SELECT polkz FROM fahrzeug"
+        result = self.execute_query(query, False, False, False)
+        result_list = [item[0] for item in result]
+        return result_list
+
+    def search_tracks(self, **params):
+        track_query = "SELECT * FROM track WHERE 1 = 1"
+        query_params = []
+
+        user_nick = params.get("user")
+        if user_nick != '':
+            query = "SELECT pid FROM person WHERE nick = %s"
+            user_id = self.execute_query(query, False, False, (user_nick,))[0][0]
+            track_query += " AND pid = %s"
+            query_params.append(user_id)
+
+        vehicle_license = params.get("vehicle")
+        if vehicle_license != '':
+            query = "SELECT fzid FROM fahrzeug WHERE polkz = %s"
+            vehicle_id = self.execute_query(query, False, False, (vehicle_license,))[0][0]
+            track_query += " AND fzid = %s"
+            query_params.append(vehicle_id)
+
+        tracks = self.execute_query(track_query, False, False, tuple(query_params))
+        time_format = "%Y-%m-%dT%H:%M"
+        try:
+            start_time = datetime.strptime(params.get("start_time"), time_format)
+        except:
+            start_time = ''
+        try:
+            end_time = datetime.strptime(params.get("end_time"), time_format)
+        except:
+            end_time = ''
+        detailed_tracks = []
+        for track in tracks:
+            query = "SELECT MIN(dt) FROM punkt WHERE(tid = %s)"
+            start = self.execute_query(query, False, False, (track[0],))[0][0]
+            if start_time != '' and start_time > start:
+                continue
+            query = "SELECT MAX(dt) FROM punkt WHERE(tid = %s)"
+            end = self.execute_query(query, False, False, (track[0],))[0][0]
+            if end_time != '' and end_time < end:
+                continue
+            track = track + (start,)
+            track = track + (end,)
+            detailed_tracks.append(track)
+        
+        return detailed_tracks
+
 
     def execute_query(self, query, commit, many, data):
         connection = mysql.connector.connect(**self.config)

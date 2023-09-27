@@ -13,19 +13,59 @@ body {
     width: 100%;
 }
 
-.user-interface {
-    width: 30%
+#anchor {
+    width: 30%;
+}
+
+.search-form, .user-interface {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 30%;
+    z-index: 99;
+    background-color: white;
+    margin: 4px;
 }
 
 .track-preview {
     width: calc(100% - 1vw);
+    height: fit-content;
     border-style: solid;
     border-color: black;
     border-width: 1px;
     padding: 5px;
     margin-right: 5vw;
+    position: relative;
+    display: inline-block;
 }
 
-.track-preview:hover {
+.nav-button {
+    width: calc(100% - 1vw);
+    height: 4vh;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+    margin-right: 5vw;
+    line-height: 4vh;
+    font-size: large;
+}
+
+.track-preview:hover, .nav-button:hover {
     background-color: rgba(245, 245, 245, 0.888);
+}
+
+.track-preview input {
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    right: 1vw;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+select, input {
+    margin: 5px;
+    height: 3vh;
 }

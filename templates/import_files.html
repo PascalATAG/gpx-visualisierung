@@ -3,10 +3,20 @@
         <title>
             Datei-Import
         </title>
+        <link rel="stylesheet" href="../static/css/import_files.css">
     </head>
     <body>
-        <div style="margin: auto; width: fit-content; text-align: center">
+        <div class="feedback">
             Es wurden {{ tracks }} Tracks mit insgesamt {{ points }} Punkten importiert.
         </div>
+        <div class="nav-button" id="map-button">
+            Zur Karte
+        </div>
     </body>
+    <script>
+        document.getElementById('map-button').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/map";
+        });
+    </script>
 </html>

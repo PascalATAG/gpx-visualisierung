@@ -9,22 +9,26 @@
     </head>
     <body>
         <div class="view-border">
-            <div class="user-interface">
-                {% for track in tracks %}
-                <div class="track-preview" onclick='load_path("{{ track }}")'>
-                    {{ track[1] }}
+            <div id="anchor">
+                <div class="user-interface">
+                    <div class="nav-button" onclick="toggleSearchForm()">
+                        Suchen ...
+                    </div>
+                    <div class="nav-button" id="import-button">
+                        Daten importieren
+                    </div>
+                    {% for track in tracks %}
+                    <div class="track-preview">
+                        <div>{{ track[1] }}</div>
+                        <div>Start: {{ track[4].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                        <div>Ende: {{ track[5].strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                        <input type="checkbox" onclick='toggle_track("{{ track }}")'>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             <div id="map"></div>
         </div>
-        <script>
-            var map = L.map('map').setView([51.337, 7.043], 13);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        </script>
         <script src="{{ url_for('static', filename='js/map_logic.js') }}"></script>
     </body>
 </html>
