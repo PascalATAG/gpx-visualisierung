@@ -18,11 +18,11 @@
                         Daten importieren
                     </div>
                     {% for track in tracks %}
-                    <div class="track-preview">
+                    <div class="track-preview" onclick='if (!event.target.classList.contains("toggle")) { analyse_track("{{ track }}"); }''>
                         <div>{{ track[1] }}</div>
                         <div>Start: {{ track[4].strftime('%Y-%m-%d %H:%M:%S') }}</div>
                         <div>Ende: {{ track[5].strftime('%Y-%m-%d %H:%M:%S') }}</div>
-                        <input type="checkbox" onclick='toggle_track("{{ track }}")'>
+                        <input type="checkbox" class="toggle" onclick='toggle_track("{{ track }}")'>
                     </div>
                     {% endfor %}
                 </div>

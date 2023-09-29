@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, session, redirect, url_for, send_file, request, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for, send_file, request, jsonify, send_from_directory
 from connector import MySQLConnector
+import analysis
 
 app = Flask(__name__)
 app.secret_key = "F"
@@ -61,3 +62,28 @@ def nicknames():
 def vehicles():
     vehicles = db.get_vehicles()
     return jsonify(vehicles)
+
+@app.route('/analyse', methods=['GET'])
+def analyse():
+    tid = request.args.get("id")
+    filename = request.args.get("name")
+    points = db.get_points(tid)
+    detailed_points = db.get_detailed_points(tid)
+    distance = analysis.total_distance(points)
+    speed_and_elevation = analysis.speed_and_elevation_data(detailed_points)
+    print(speed_and_elevation)
+    if speed_and_elevation:
+        speed, elevation, max_speed = speed_and_elevation
+        return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed, elevation=elevation)
+    else:
+        return render_template("analysis.html", distance=distance, name=filename, tid=tid)
+
+@app.route('/elevation', methods=['GET'])
+def elevation():
+    tid = request.args.get("id")
+    result = db.get_elevation_data(tid)
+    return jsonify(result)
+
+@app.route('/images/<path:image_filename>')
+def images(image_filename):
+    return send_from_directory('./node_modules/leaflet/dist/images', image_filename)

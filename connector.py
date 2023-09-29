@@ -2,6 +2,7 @@ import mysql.connector
 import os
 import gpxpy
 from datetime import datetime
+import re
 
 class MySQLConnector:
     def __init__(self, user, password, host, database):
@@ -44,6 +45,7 @@ class MySQLConnector:
 
             with open(os.path.join(path, filename)) as file:
                 gpxfile = file.read()
+                gpxfile = re.sub(r'<time>(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})Z</time>', r'<time>\1T\2:00Z</time>', gpxfile)
                 gpx = gpxpy.parse(gpxfile)
                 point_data = []
                 for track in gpx.tracks:
@@ -65,6 +67,20 @@ class MySQLConnector:
         result = self.execute_query(query, False, False, (tid,))
         return result
     
+    def get_detailed_points(self, tid):
+        query = "SELECT lat, lon, dt, ele FROM punkt WHERE(tid = %s)"
+        result = self.execute_query(query, False, False, (tid,))
+        return result
+    
+    def get_elevation_data(self, tid):
+        query = "SELECT dt, ele FROM punkt WHERE(tid = %s)"
+        result = self.execute_query(query, False, False, (tid,))
+        data = {}
+        for timestamp, value in result:
+            timestamp_str = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            data[timestamp_str] = value
+        return data
+
     def get_nicknames(self):
         query = "SELECT nick FROM person"
         result = self.execute_query(query, False, False, False)

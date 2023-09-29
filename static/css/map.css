@@ -17,6 +17,11 @@ body {
     width: 30%;
 }
 
+.user-interface {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 .search-form, .user-interface {
     position: fixed;
     top: 0;
@@ -53,7 +58,7 @@ body {
 }
 
 .track-preview:hover, .nav-button:hover {
-    background-color: rgba(245, 245, 245, 0.888);
+    background-color: rgba(220, 220, 220);
 }
 
 .track-preview input {
@@ -65,7 +70,7 @@ body {
     transform: translateY(-50%);
 }
 
-select, input {
-    margin: 5px;
-    height: 3vh;
+.search-input {
+    margin: 2vh;
+    height: 6vh;
 }

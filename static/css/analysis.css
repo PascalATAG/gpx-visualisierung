@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    margin:auto;
+    width: fit-content;
+}
+
+.nav-button {
+    width: 15vw;
+    height: 4vh;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 5px;
+    position: fixed;
+    bottom: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    line-height: 4vh;
+    font-size: large;
+    text-align: center;
+}
+
+.nav-button:hover {
+    background-color: rgb(220, 220, 220);
+}
+
+.data {
+    margin-left: 3vw;
+    font-size: large;
+}
+
+.data div {
+    margin-bottom: 5vh;
+}
+
+#elevationChart {
+    width: 75vw !important;
+    height: 65vh !important;
+    margin-right: 3vw;
+}
+
+.content {
+    margin-top: 10vh;
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>
+            Analyse
+        </title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="../static/css/analysis.css">
+    </head>
+    <body>
+        <h1>Analyse für {{ name }}</h1>
+        <div class="content">
+            <div class="data">
+                <div>
+                    <b>Distanz:</b><br>
+                    {{ distance }} km
+                </div>
+                {% if speed %}
+                <div>
+                    <b>Durchschnittliche Geschwindigkeit:</b><br>
+                    {{ speed }} km/h
+                </div>
+                <div>
+                    <b>Höchstgeschwindigkeit:</b><br>
+                    {{ max_speed }} km/h
+                </div>
+                <div>
+                    <b>Durchschnittliche Erhöhung:</b><br>
+                    {{ elevation }} m
+                </div>
+                {% endif %}
+            </div>
+            {% if elevation %}
+            <canvas id="elevationChart"></canvas>
+            {% endif %}
+        </div>
+        <div class="nav-button" id="map-button">
+            Zur Karte
+        </div>
+        <script>
+            var tid = "{{ tid }}";
+        </script>
+        <script src="{{ url_for('static', filename='js/analysis_logic.js') }}"></script>
+    </body>
+    <script>
+        document.getElementById('map-button').addEventListener('click', function(event){
+            event.preventDefault();
+            window.location.href = "/map";
+        });
+    </script>
+</html>

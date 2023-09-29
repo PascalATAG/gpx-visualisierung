@@ -5,6 +5,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var activeLines = {};
+var activeMarkers = {};
 var searchForm = false;
 var nicknames = [];
 var vehicles = [];
@@ -45,12 +46,37 @@ function load_path(track){
         var polyline = L.polyline(res, {color: 'red'}).addTo(map);
         map.fitBounds(polyline.getBounds());
         activeLines[track[0]] = polyline;
+
+        var firstCoordinate = polyline.getLatLngs()[0];
+        var lastCoordinate = polyline.getLatLngs()[polyline.getLatLngs().length - 1];
+
+        var firstMarker = L.marker(firstCoordinate).addTo(map);
+        var lastMarker = L.marker(lastCoordinate).addTo(map);
+
+        firstMarker.bindTooltip(track[1]+' Start');
+        lastMarker.bindTooltip(track[1]+' Ende');
+
+        activeMarkers[track[0]] = [firstMarker, lastMarker];
     });
+}
+
+function analyse_track(track){
+    const pattern = /\((.*)\)/;
+    const matches = track.match(pattern);
+    track = matches[1].split(",");
+    window.location.href = "/analyse?id="+track[0]+"&name="+track[1];
 }
 
 function remove_path(track){
     map.removeLayer(activeLines[track[0]]);
     delete activeLines[track[0]];
+
+    if (activeMarkers[track[0]]) {
+        activeMarkers[track[0]].forEach(function (marker) {
+            map.removeLayer(marker);
+        });
+        delete activeMarkers[track[0]];
+    }
 }
 
 function load_user_nicknames(){
@@ -101,13 +127,13 @@ function toggleSearchForm(){
         </div>
         <form id="search" action="/search" method="post">
         <label for="user">Fahrerkürzel:</label>
-        <select id="user" type="text" name="user"></select><br>
+        <select class="search-input" id="user" type="text" name="user"></select><br>
         <label for="vehicle">Fahrzeug:</label>
-        <select id="vehicle" type="text" name="vehicle"></select><br>
+        <select class="search-input" id="vehicle" type="text" name="vehicle"></select><br>
         <label for="start-time">Von:</label>
-        <input type="datetime-local" id="start-time" name="start-time"><br>
+        <input class="search-input" type="datetime-local" id="start-time" name="start-time"><br>
         <label for="start-time">Bis:</label>
-        <input type="datetime-local" id="end-time" name="end-time"><br>
+        <input class="search-input" type="datetime-local" id="end-time" name="end-time"><br>
         </form>
         `;
 
