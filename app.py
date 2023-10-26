@@ -5,7 +5,7 @@ import analysis
 app = Flask(__name__)
 app.secret_key = "F"
 
-db = MySQLConnector(user = 'root', password = "Zoralias7", host = "127.0.0.1", database = "gpx_daten")
+db = MySQLConnector(user = 'root', password = "", host = "127.0.0.1", database = "gpx_daten")
 
 @app.route('/', methods=['GET'])
 def index():
@@ -69,14 +69,13 @@ def analyse():
     filename = request.args.get("name")
     points = db.get_points(tid)
     detailed_points = db.get_detailed_points(tid)
-    distance = analysis.total_distance(points)
-    speed_and_elevation = analysis.speed_and_elevation_data(detailed_points)
-    print(speed_and_elevation)
-    if speed_and_elevation:
-        speed, elevation, max_speed = speed_and_elevation
+    speed_and_distance = analysis.speed_and_distance(detailed_points)
+    speed, distance, max_speed = speed_and_distance
+    elevation = analysis.elevation(detailed_points)
+    if elevation:
         return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed, elevation=elevation)
     else:
-        return render_template("analysis.html", distance=distance, name=filename, tid=tid)
+        return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed)
 
 @app.route('/elevation', methods=['GET'])
 def elevation():

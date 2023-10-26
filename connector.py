@@ -45,6 +45,7 @@ class MySQLConnector:
 
             with open(os.path.join(path, filename)) as file:
                 gpxfile = file.read()
+                # The time was not formatted correctly for a few files
                 gpxfile = re.sub(r'<time>(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})Z</time>', r'<time>\1T\2:00Z</time>', gpxfile)
                 gpx = gpxpy.parse(gpxfile)
                 point_data = []
@@ -94,6 +95,7 @@ class MySQLConnector:
         return result_list
 
     def search_tracks(self, **params):
+        # track_query may get conditions attached at the end of the string
         track_query = "SELECT * FROM track WHERE 1 = 1"
         query_params = []
 
@@ -141,6 +143,8 @@ class MySQLConnector:
     def execute_query(self, query, commit, many, data):
         connection = mysql.connector.connect(**self.config)
         cursor = connection.cursor(prepared = True)
+        # Many is only used for the large gpx file import
+        # Data is used to replace placeholders for prepared statements
         if data and not many:
             cursor.execute(query, data)
         elif data and many:

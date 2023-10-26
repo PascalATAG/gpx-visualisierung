@@ -22,10 +22,12 @@ function toggle_track(track){
     }
     timeMatches.forEach((item) => {
         numbers = item.split(", ");
-        numbers.pop();
         for(let i = 0; i < numbers.length; i++){
             if(numbers[i].length === 1){
-              numbers[i] = "0" + numbers[i];
+                numbers[i] = "0" + numbers[i];
+            }
+            if(numbers[i] == ""){
+                numbers[i] = "00"
             }
         }
         let time = numbers[0]+"-"+numbers[1]+"-"+numbers[2]+" "+numbers[3]+":"+numbers[4]+":"+numbers[5];
