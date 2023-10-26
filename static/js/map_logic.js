@@ -13,12 +13,30 @@ load_user_nicknames();
 load_vehicles();
 
 function toggle_track(track){
+    const timePattern = /datetime\.datetime\(([\d\s|,\s]+)/g;
+    const timeMatches = [];
+    const times = [];
+    let timeMatch;
+    while(timeMatch = timePattern.exec(track)){
+        timeMatches.push(timeMatch[1]);
+    }
+    timeMatches.forEach((item) => {
+        numbers = item.split(", ");
+        numbers.pop();
+        for(let i = 0; i < numbers.length; i++){
+            if(numbers[i].length === 1){
+              numbers[i] = "0" + numbers[i];
+            }
+        }
+        let time = numbers[0]+"-"+numbers[1]+"-"+numbers[2]+" "+numbers[3]+":"+numbers[4]+":"+numbers[5];
+        times.push(time);
+    });
     const pattern = /\((.*)\)/;
     const matches = track.match(pattern);
     track = matches[1].split(",");
 
     if(activeLines[track[0]] === undefined){
-        load_path(track);
+        load_path(track, times);
     }else{
         remove_path(track);
     }
@@ -29,7 +47,7 @@ document.getElementById('import-button').addEventListener('click', function(even
     window.location.href = "/import_files";
 });
 
-function load_path(track){
+function load_path(track, times){
     fetch("/draw_path", {
         method: "POST",
         body: JSON.stringify({
@@ -53,8 +71,8 @@ function load_path(track){
         var firstMarker = L.marker(firstCoordinate).addTo(map);
         var lastMarker = L.marker(lastCoordinate).addTo(map);
 
-        firstMarker.bindTooltip(track[1]+' Start');
-        lastMarker.bindTooltip(track[1]+' Ende');
+        firstMarker.bindTooltip(track[1]+' Start: '+times[0]);
+        lastMarker.bindTooltip(track[1]+' Ende: '+times[1]);
 
         activeMarkers[track[0]] = [firstMarker, lastMarker];
     });
