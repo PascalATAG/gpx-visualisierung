@@ -73,7 +73,8 @@ def analyse():
     speed, distance, max_speed = speed_and_distance
     elevation = analysis.elevation(detailed_points)
     if elevation:
-        return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed, elevation=elevation)
+        avg_elevation, max_elevation = elevation
+        return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed, elevation=avg_elevation, max_elevation=max_elevation)
     else:
         return render_template("analysis.html", distance=distance, name=filename, speed=speed, tid=tid, max_speed=max_speed)
 
